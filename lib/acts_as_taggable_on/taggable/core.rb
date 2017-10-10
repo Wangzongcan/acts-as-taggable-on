@@ -193,10 +193,11 @@ module ActsAsTaggableOn::Taggable
     def process_dirty_object(context, new_list)
       value = new_list.is_a?(Array) ? ActsAsTaggableOn::TagList.new(new_list) : new_list
       attrib = "#{context.to_s.singularize}_list"
+      @changed_attributes ||= ActiveSupport::HashWithIndifferentAccess.new
 
-      if changed_attributes.include?(attrib)
+      if @changed_attributes.include?(attrib)
         # The attribute already has an unsaved change.
-        old = changed_attributes[attrib]
+        old = @changed_attributes[attrib]
         @changed_attributes.delete(attrib) if old.to_s == value.to_s
       else
         old = tag_list_on(context)
